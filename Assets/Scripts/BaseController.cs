@@ -1,36 +1,57 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class BaseController : MonoBehaviour
 {
-	[SerializeField] private Transform[] _unitSpawnPoints;
-	[SerializeField] private Unit _unitPrefab;
+    [SerializeField] private Unit _unitPrefab;
+    private List<UnitController> _activeUnits = new List<UnitController>();
 
-	private int _resourcesCount = 0;
+    private int _availableResources = 0;
+    private int _unitsCount = 3;
 
-	private void Awake()
-	{
-		SpawnUnits();
-	}
+    void Start()
+    {
+        for (int i = 0; i < _unitsCount; i++)
+        {
+            InstantiateUnit();
+        }
+    }
 
-	private void SpawnUnits()
-	{
-		int requiredSpawnPointsCount = 3;
+    private void Update()
+    {
+        ScanForResources();
+    }
 
-		for (int i = 0; i < _unitSpawnPoints.Length; i++)
-		{
-			if (_unitSpawnPoints.Length >= requiredSpawnPointsCount && _unitSpawnPoints != null)
-			{
-				Instantiate(_unitPrefab, _unitSpawnPoints[i].position, Quaternion.identity);
-			}
-			else
-			{
-				Debug.Log("Not enough spawnpoints or null");
-			}
-		}
-	}
+    private void ScanForResources()
+    {
+        Resource[] resources = FindObjectsOfType<Resource>();
 
-	private void UnitReturned()
-	{
-		_resourcesCount++;
-	}
+        if (resources.Length > 0)
+        {
+            SendUnitToCollect(resources[0].transform.position);
+        }
+    }
+
+    private void SendUnitToCollect(Vector3 resourcePosition)
+    {
+        if (_activeUnits.Count > 0)
+        {
+            UnitController unitController = _activeUnits[0];
+            unitController.CollectResource(resourcePosition, this);
+            _activeUnits.RemoveAt(0);
+            _availableResources++;
+        }
+    }
+
+    public void ResourceCollected()
+    {
+        _availableResources++;
+    }
+
+    private void InstantiateUnit()
+    {
+        Unit unit = Instantiate(_unitPrefab, transform.position + new Vector3(0, 0.5f, 0), Quaternion.identity);
+        UnitController unitController = unit.GetComponent<UnitController>();
+        _activeUnits.Add(unitController);
+    }
 }

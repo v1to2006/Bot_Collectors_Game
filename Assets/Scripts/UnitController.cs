@@ -1,38 +1,43 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
 public class UnitController : MonoBehaviour
 {
-	[SerializeField] private Base _basePoint;
+    private Vector3 _resourcePosition;
+    private BaseController _baseController;
+    private float _movementSpeed = 5f;
+    private bool _collected = false;
 
-	private Rigidbody _rigidbody;
-	private float _movementSpeed = 5f;
+    public void CollectResource(Vector3 position, BaseController baseController)
+    {
+        _resourcePosition = position;
+        _baseController = baseController;
+    }
 
-	private Transform _targetResource;
-	private Transform _targetPoint;
+    private void Update()
+    {
+        if (!_collected)
+        {
+            MoveTowardsResource();
+        }
+    }
 
-	private void Awake()
-	{
-		_rigidbody = GetComponent<Rigidbody>();
-	}
+    private void MoveTowardsResource()
+    {
+        Vector3 direction = (_resourcePosition - transform.position).normalized;
+        float distance = Vector3.Distance(transform.position, _resourcePosition);
 
-	public void SetTargetPoint(Transform targetPoint)
-	{
-		_targetPoint = targetPoint;
-	}
+        transform.Translate(direction * _movementSpeed * Time.deltaTime);
 
-	private void MoveToTarget()
-	{
-		_rigidbody.Move(_targetPoint.position.normalized * _movementSpeed * Time.fixedDeltaTime, Quaternion.identity);
+        if (distance < 0.1f)
+        {
+            CollectResource();
+        }
+    }
 
-		_rigidbody.Move(_basePoint.transform.position.normalized * _movementSpeed * Time.fixedDeltaTime, Quaternion.identity);
-	}
-
-	private void OnTriggerEnter(Collider collider)
-	{
-		if (collider.TryGetComponent<Resource>(out Resource resource))
-		{
-
-		}
-	}
+    private void CollectResource()
+    {
+        _collected = true;
+        _baseController.ResourceCollected();
+        Destroy(gameObject);
+    }
 }
