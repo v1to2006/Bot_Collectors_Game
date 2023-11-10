@@ -3,42 +3,42 @@ using UnityEngine;
 
 public class ResourceGenerator : MonoBehaviour
 {
-    [SerializeField] private Resource _resourcePrefab;
-    [SerializeField] private float _delayTime;
+	[SerializeField] private Resource _resourcePrefab;
+	[SerializeField] private float _spawnDelay;
 
-    private void Awake()
-    {
-        StartCoroutine(SpawnResources());
-    }
+	private void Awake()
+	{
+		StartCoroutine(SpawnResources());
+	}
 
-    private IEnumerator SpawnResources()
-    {
-        WaitForSeconds delay = new WaitForSeconds(_delayTime);
+	private IEnumerator SpawnResources()
+	{
+		WaitForSeconds delay = new WaitForSeconds(_spawnDelay);
 
-        float minBaseXPosition = -5f;
-        float maxBaseXPosition = 5f;
+		float minBaseXPosition = -5f;
+		float maxBaseXPosition = 5f;
 
-        while (true)
-        {
-            Vector3 randomPosition = GenerateRandomPositionExcludingRange(minBaseXPosition, maxBaseXPosition);
-            Instantiate(_resourcePrefab, randomPosition, Quaternion.identity);
+		while (true)
+		{
+			Vector3 randomPosition = GenerateRandomPositionExcludingRange(minBaseXPosition, maxBaseXPosition);
+			Instantiate(_resourcePrefab, randomPosition, Quaternion.identity);
 
-            yield return delay;
-        }
-    }
+			yield return delay;
+		}
+	}
 
-    private Vector3 GenerateRandomPositionExcludingRange(float rangeMin, float rangeMax)
-    {
-        Vector3 randomPosition;
+	private Vector3 GenerateRandomPositionExcludingRange(float rangeMin, float rangeMax)
+	{
+		Vector3 randomPosition = new Vector3(0, 0, 0);
 
-        float minGenerateRange = -20f;
-        float maxGenerateRange = 20f;
+		float minGenerateRange = -40f;
+		float maxGenerateRange = 40f;
 
-        do
-        {
-            randomPosition = new Vector3(Random.Range(minGenerateRange, maxGenerateRange), 0.5f, Random.Range(minGenerateRange, maxGenerateRange));
-        } while (randomPosition.x > rangeMin && randomPosition.x < rangeMax && randomPosition.z > rangeMin && randomPosition.z < rangeMax);
+		while (randomPosition.x > rangeMin && randomPosition.x < rangeMax && randomPosition.z > rangeMin && randomPosition.z < rangeMax)
+		{
+			randomPosition = new Vector3(Random.Range(minGenerateRange, maxGenerateRange), 0f, Random.Range(minGenerateRange, maxGenerateRange));
+		}
 
-        return randomPosition;
-    }
+		return randomPosition;
+	}
 }
