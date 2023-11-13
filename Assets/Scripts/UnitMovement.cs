@@ -6,7 +6,7 @@ public class UnitMovement : MonoBehaviour
 {
 	[SerializeField] private float _movementSpeed;
 
-	private float _reachDistance = 1.5f;
+	private float _reachDistance = 1f;
 
 	public IEnumerator MoveToTarget(Transform target, Action complete)
 	{
