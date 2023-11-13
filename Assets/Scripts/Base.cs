@@ -1,14 +1,14 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Base : MonoBehaviour
 {
 	[SerializeField] private Unit _unitPrefab;
+	[SerializeField] private ResourceScanner _resourceScanner;
 	[SerializeField] private SpawnPoint[] _unitSpawnPoints;
 
 	private Queue<Unit> _activeUnits;
-	private List<Resource> _scannedResources;
 
 	private int _startUnitsCount = 3;
 	private int _unitSpawnPointIndex = 0;
@@ -23,7 +23,7 @@ public class Base : MonoBehaviour
 			SpawnUnit();
 		}
 
-		StartCoroutine(ScanForResources());
+		StartCoroutine(SendUnits());
 	}
 
 	public void CollectResource(Unit unit, Resource deliveredResource)
@@ -37,35 +37,26 @@ public class Base : MonoBehaviour
 		Debug.Log($"Resources collected: {_resourcesCount}");
 	}
 
-	private IEnumerator ScanForResources()
+	private IEnumerator SendUnits()
 	{
-		float delayTime = 1f;
-		WaitForSeconds scanDelay = new WaitForSeconds(delayTime);
+		float delayTime = 0.1f;
+		WaitForSeconds delay = new WaitForSeconds(delayTime);
 
 		while (true)
 		{
-			_scannedResources = new List<Resource>(FindObjectsOfType<Resource>());
+			SendUnit();
 
-			if (_activeUnits.Count > 0 && _scannedResources.Count > 0)
-			{
-				foreach (Resource resource in _scannedResources)
-				{
-					if (resource.IsTarget == false)
-					{
-						SendUnit(resource);
-						break;
-					}
-				}
-			}
-
-			yield return scanDelay;
+			yield return delay;
 		}
 	}
 
-	private void SendUnit(Resource resource)
+	private void SendUnit()
 	{
-		resource.SetIsTarget(true);
-		_activeUnits.Dequeue().StartDelivery(resource, this);
+		if (_activeUnits.Count > 0 && _resourceScanner.GetResourcesCount() > 0)
+		{
+			Resource resource = _resourceScanner.GetResource();
+			_activeUnits.Dequeue().StartDelivery(resource, this);
+		}
 	}
 
 	private void SpawnUnit()

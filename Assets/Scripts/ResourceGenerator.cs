@@ -4,6 +4,7 @@ using UnityEngine;
 public class ResourceGenerator : MonoBehaviour
 {
 	[SerializeField] private Resource _resourcePrefab;
+	[SerializeField] private ResourceScanner _resourceScanner;
 	[SerializeField] private float _spawnDelay;
 
 	private void Awake()
@@ -21,7 +22,7 @@ public class ResourceGenerator : MonoBehaviour
 		while (true)
 		{
 			Vector3 randomPosition = GenerateRandomPositionExcludingRange(minBaseXPosition, maxBaseXPosition);
-			Instantiate(_resourcePrefab, randomPosition, Quaternion.identity);
+			_resourceScanner.AddResource(Instantiate(_resourcePrefab, randomPosition, Quaternion.identity, transform));
 
 			yield return delay;
 		}
