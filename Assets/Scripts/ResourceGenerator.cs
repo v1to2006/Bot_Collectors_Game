@@ -6,6 +6,8 @@ public class ResourceGenerator : MonoBehaviour
 	[SerializeField] private Resource _resourcePrefab;
 	[SerializeField] private ResourceScanner _resourceScanner;
 	[SerializeField] private float _spawnDelay;
+	[SerializeField] private float _minSpawnRange;
+	[SerializeField] private float _maxSpawnRange;
 
 	private void Awake()
 	{
@@ -32,12 +34,9 @@ public class ResourceGenerator : MonoBehaviour
 	{
 		Vector3 randomPosition = new Vector3(0, 0, 0);
 
-		float minGenerateRange = -40f;
-		float maxGenerateRange = 40f;
-
 		while (randomPosition.x > rangeMin && randomPosition.x < rangeMax && randomPosition.z > rangeMin && randomPosition.z < rangeMax)
 		{
-			randomPosition = new Vector3(Random.Range(minGenerateRange, maxGenerateRange), 0f, Random.Range(minGenerateRange, maxGenerateRange));
+			randomPosition = new Vector3(Random.Range(_minSpawnRange, _maxSpawnRange), 0f, Random.Range(_minSpawnRange, _maxSpawnRange));
 		}
 
 		return randomPosition;
