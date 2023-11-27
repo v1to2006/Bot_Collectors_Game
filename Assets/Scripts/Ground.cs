@@ -3,13 +3,15 @@ using UnityEngine.EventSystems;
 
 public class Ground : MonoBehaviour, IPointerClickHandler
 {
-	public void OnPointerClick(PointerEventData eventData)
-	{
-		Ray ray = Camera.main.ScreenPointToRay(eventData.position);
+    [SerializeField] private Base _selectedBase;
 
-		if (Physics.Raycast(ray, out RaycastHit hit))
-		{
-			Debug.Log(hit.point);
-		}
-	}
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(eventData.position);
+
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            _selectedBase.TryPlaceFlag(hit.point);
+        }
+    }
 }

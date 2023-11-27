@@ -123,6 +123,17 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &537411670 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3637731002388886982, guid: b1ac0e8409b572d43b8981b86da21c28, type: 3}
+  m_PrefabInstance: {fileID: 293250327211985981}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 724c29a0009fb67469e2af3ee86c0e8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &542560476
 GameObject:
   m_ObjectHideFlags: 0
@@ -169,7 +180,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _resourcePrefab: {fileID: 3806626429366283324, guid: 34b40e45a4040364184f46a893e1f0e2, type: 3}
   _resourceScanner: {fileID: 2036943016}
-  _spawnDelay: 3
+  _spawnDelay: 2
   _minSpawnRange: -100
   _maxSpawnRange: 100
 --- !u!114 &591141497 stripped
@@ -585,6 +596,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f4f55d3c86690a458f4910b029d8dd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _selectedBase: {fileID: 537411670}
 --- !u!114 &1830765682 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1435897693282689226, guid: b1ac0e8409b572d43b8981b86da21c28, type: 3}
