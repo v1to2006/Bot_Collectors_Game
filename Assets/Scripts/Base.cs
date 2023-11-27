@@ -6,118 +6,102 @@ using UnityEngine.EventSystems;
 [RequireComponent(typeof(MouseFollow))]
 public class Base : MonoBehaviour, IPointerClickHandler
 {
-    [SerializeField] private Unit _unitPrefab;
-    [SerializeField] private Flag _flagPrefab;
-    [SerializeField] private ResourceScanner _resourceScanner;
-    [SerializeField] private SpawnPoint[] _unitSpawnPoints;
+	[SerializeField] private Unit _unitPrefab;
+	[SerializeField] private Flag _flagPrefab;
+	[SerializeField] private ResourceScanner _resourceScanner;
+	[SerializeField] private SpawnPoint[] _unitSpawnPoints;
 
-    private MouseFollow _mouseFollower;
-    private Queue<Unit> _activeUnits;
-    private Flag _flag;
+	private MouseFollow _mouseFollower;
+	private Queue<Unit> _activeUnits;
+	private Flag _flag;
+	private Coroutine _mouseFollowCoroutine;
 
-    private bool _flagSelected = false;
+	private bool _flagSelected = false;
 
-    private int _startUnitsCount = 3;
-    private int _unitSpawnPointIndex = 0;
-    private int _resourcesCount = 0;
-    private int _unitPrice = 3;
-    private int _baseBuildPrice = 5;
+	private int _resourcesCount = 0;
+	private int _startUnitsCount = 3;
+	private int _unitSpawnPointIndex = 0;
+	private int _unitPrice = 3;
+	private int _baseBuildPrice = 5;
 
-    private void Awake()
-    {
-        _activeUnits = new Queue<Unit>();
-        _mouseFollower = GetComponent<MouseFollow>();
+	private void Awake()
+	{
+		_activeUnits = new Queue<Unit>();
+		_mouseFollower = GetComponent<MouseFollow>();
 
-        for (int i = 0; i < _startUnitsCount; i++)
-        {
-            CreateUnit();
-        }
+		for (int i = 0; i < _startUnitsCount; i++)
+		{
+			CreateUnit();
+		}
 
-        StartCoroutine(SendUnitsForResources());
-    }
+		StartCoroutine(SendUnitsForResources());
+	}
 
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        Ray ray = Camera.main.ScreenPointToRay(eventData.position);
+	public void OnPointerClick(PointerEventData eventData)
+	{
+		if (!_flagSelected)
+		{
+			_flag = Instantiate(_flagPrefab);
+			_mouseFollowCoroutine = StartCoroutine(_mouseFollower.FollowMouse(_flag.transform));
+			_flagSelected = true;
+		}
+		else
+		{
+			StopCoroutine(_mouseFollowCoroutine);
+			Destroy(_flag.gameObject);
+			_flag = null;
+			_flagSelected = false;
+		}
+	}
 
-        if (Physics.Raycast(ray, out RaycastHit hit) && !_flagSelected)
-        {
-            _flag = Instantiate(_flagPrefab, hit.point, Quaternion.identity);
-            StartCoroutine(_mouseFollower.FollowMouse(_flag.transform));
-            _flagSelected = true;
-        }
-    }
+	public void CollectResource(Unit unit, Resource deliveredResource)
+	{
+		Destroy(deliveredResource.gameObject);
 
-    public void CollectResource(Unit unit, Resource deliveredResource)
-    {
-        Destroy(deliveredResource.gameObject);
+		_resourcesCount++;
 
-        _resourcesCount++;
+		_activeUnits.Enqueue(unit);
 
-        _activeUnits.Enqueue(unit);
+		TryBuyNewUnit();
+	}
 
-        if (ShouldSendUnitToBuildBase())
-        {
-            SendUnitToBuildBase();
-        }
-        else if (CanAffordNewUnit())
-        {
-            BuyNewUnit();
-        }
-    }
+	private void TryBuyNewUnit()
+	{
+		if (_resourcesCount >= _unitPrice)
+		{
+			CreateUnit();
 
-    private bool CanAffordNewUnit()
-    {
-        return _resourcesCount >= _unitPrice;
-    }
+			_resourcesCount -= _unitPrice;
+		}
+	}
 
-    private bool ShouldSendUnitToBuildBase()
-    {
-        return _resourcesCount >= _baseBuildPrice;
-    }
+	private void SendUnitBuildBase()
+	{
 
-    private void BuyNewUnit()
-    {
-        CreateUnit();
+	}
 
-        _resourcesCount -= _unitPrice;
-    }
+	private IEnumerator SendUnitsForResources()
+	{
+		while (true)
+		{
+			SendUnitToCollectResource();
 
-    private void SendUnitToBuildBase()
-    {
+			yield return null;
+		}
+	}
 
-    }
+	private void SendUnitToCollectResource()
+	{
+		if (_activeUnits.Count > 0 && _resourceScanner.GetResourcesCount() > 0)
+		{
+			Resource resource = _resourceScanner.GetResource();
+			_activeUnits.Dequeue().StartDelivery(resource, this);
+		}
+	}
 
-    private void SetFlag()
-    {
-
-    }
-
-    private IEnumerator SendUnitsForResources()
-    {
-        float delayTime = 0.1f;
-        WaitForSeconds delay = new WaitForSeconds(delayTime);
-
-        while (true)
-        {
-            SendUnitToCollectResource();
-
-            yield return delay;
-        }
-    }
-
-    private void SendUnitToCollectResource()
-    {
-        if (_activeUnits.Count > 0 && _resourceScanner.GetResourcesCount() > 0)
-        {
-            Resource resource = _resourceScanner.GetResource();
-            _activeUnits.Dequeue().StartDelivery(resource, this);
-        }
-    }
-
-    private void CreateUnit()
-    {
-        Unit unit = Instantiate(_unitPrefab, _unitSpawnPoints[_unitSpawnPointIndex++ % _unitSpawnPoints.Length].transform.position, Quaternion.identity);
-        _activeUnits.Enqueue(unit);
-    }
+	private void CreateUnit()
+	{
+		Unit unit = Instantiate(_unitPrefab, _unitSpawnPoints[_unitSpawnPointIndex++ % _unitSpawnPoints.Length].transform.position, Quaternion.identity);
+		_activeUnits.Enqueue(unit);
+	}
 }
