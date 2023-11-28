@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ResourceScanner : MonoBehaviour
 {
-	private Queue<Resource> _scannedResources = new Queue<Resource>();
+	private readonly Queue<Resource> _scannedResources = new Queue<Resource>();
 
 	public Resource GetResource()
 	{

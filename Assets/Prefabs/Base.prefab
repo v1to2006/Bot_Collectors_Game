@@ -1,49 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &30055655613094027
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4545328232495153986}
-  - component: {fileID: 3164520865454828547}
-  m_Layer: 0
-  m_Name: ResourceScanner
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4545328232495153986
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 30055655613094027}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1596070408907561545}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3164520865454828547
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 30055655613094027}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24a60173277f3f84aa4c0328cc211866, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &311919230159343209
 GameObject:
   m_ObjectHideFlags: 0
@@ -121,7 +77,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2505401682228526278}
-  - {fileID: 4545328232495153986}
   - {fileID: 337611507229299778}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -160,7 +115,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _unitPrefab: {fileID: 417707134625261088, guid: 6c600efd88b879146850a60660a48706, type: 3}
   _flagPrefab: {fileID: 6013377291494442090, guid: f9dbaed26a1346844a3a01956122f42d, type: 3}
-  _resourceScanner: {fileID: 3164520865454828547}
+  _ground: {fileID: 0}
+  _resourceScanner: {fileID: 0}
   _unitSpawnPoints:
   - {fileID: 5959684799180676778}
   - {fileID: 8026204028442292256}

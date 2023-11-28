@@ -18,27 +18,19 @@ public class ResourceGenerator : MonoBehaviour
 	{
 		WaitForSeconds delay = new WaitForSeconds(_spawnDelay);
 
-		float minBaseXPosition = -5f;
-		float maxBaseXPosition = 5f;
-
 		while (true)
 		{
-			Vector3 randomPosition = GenerateRandomPositionExcludingRange(minBaseXPosition, maxBaseXPosition);
-			_resourceScanner.AddResource(Instantiate(_resourcePrefab, randomPosition, Quaternion.identity, transform));
+			_resourceScanner.AddResource(Instantiate(_resourcePrefab,
+				GenerateRandomPosition(),
+				Quaternion.identity,
+				transform));
 
 			yield return delay;
 		}
 	}
 
-	private Vector3 GenerateRandomPositionExcludingRange(float rangeMin, float rangeMax)
+	private Vector3 GenerateRandomPosition()
 	{
-		Vector3 randomPosition = new Vector3(0, 0, 0);
-
-		while (randomPosition.x > rangeMin && randomPosition.x < rangeMax && randomPosition.z > rangeMin && randomPosition.z < rangeMax)
-		{
-			randomPosition = new Vector3(Random.Range(_minSpawnRange, _maxSpawnRange), 0f, Random.Range(_minSpawnRange, _maxSpawnRange));
-		}
-
-		return randomPosition;
+		return new Vector3(Random.Range(_minSpawnRange, _maxSpawnRange), 0f, Random.Range(_minSpawnRange, _maxSpawnRange));
 	}
 }
