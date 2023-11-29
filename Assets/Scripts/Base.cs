@@ -31,7 +31,7 @@ public class Base : MonoBehaviour, IPointerClickHandler
         _activeUnits = new Queue<Unit>();
         _mouseFollow = GetComponent<MouseFollow>();
 
-        _ground.Clicked += TryPlaceFlag;
+        _ground.GroundClicked += TryPlaceFlag;
 
         for (int i = 0; i < _startUnitsCount; i++)
         {

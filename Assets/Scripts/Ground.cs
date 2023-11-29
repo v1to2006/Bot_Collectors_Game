@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 
 public class Ground : MonoBehaviour, IPointerClickHandler
 {
-	public event UnityAction Clicked;
+	public event UnityAction GroundClicked;
 
 	public Vector3 HitPosition { get; private set; }
 
@@ -16,7 +16,7 @@ public class Ground : MonoBehaviour, IPointerClickHandler
 		{
 			HitPosition = hit.point;
 
-			Clicked.Invoke();
+			GroundClicked.Invoke();
 		}
 	}
 }

@@ -59,6 +59,5 @@ public class Unit : MonoBehaviour
 		{
 			_mainBase.CollectResource(this, _targetResource);
 		}));
-
 	}
 }
