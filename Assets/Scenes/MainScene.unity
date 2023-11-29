@@ -638,6 +638,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1826192452}
+  - component: {fileID: 1826192453}
   m_Layer: 0
   m_Name: FlagSelector
   m_TagString: Untagged
@@ -660,6 +661,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1826192453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1826192451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7e966cc0623748478ca83141b764148, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1830765682 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1435897693282689226, guid: b1ac0e8409b572d43b8981b86da21c28, type: 3}
@@ -766,6 +779,10 @@ PrefabInstance:
       propertyPath: _ground
       value: 
       objectReference: {fileID: 979278358}
+    - target: {fileID: 3637731002388886982, guid: b1ac0e8409b572d43b8981b86da21c28, type: 3}
+      propertyPath: _flagSelector
+      value: 
+      objectReference: {fileID: 1826192453}
     - target: {fileID: 3637731002388886982, guid: b1ac0e8409b572d43b8981b86da21c28, type: 3}
       propertyPath: _flagSelection
       value: 
