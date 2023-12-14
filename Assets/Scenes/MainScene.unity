@@ -123,52 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &195815675
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 195815677}
-  - component: {fileID: 195815676}
-  m_Layer: 0
-  m_Name: ResourceScanner
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &195815676
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 195815675}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24a60173277f3f84aa4c0328cc211866, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _radius: 10000
-  _scanDelayTime: 0.5
---- !u!4 &195815677
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 195815675}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1633550265}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &542560476
 GameObject:
   m_ObjectHideFlags: 0
@@ -213,7 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3126348a7929f4b42b08d6604faf1f10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _resourcePrefab: {fileID: 3806626429366283324, guid: 34b40e45a4040364184f46a893e1f0e2, type: 3}
+  resourceTemplate: {fileID: 3806626429366283324, guid: 34b40e45a4040364184f46a893e1f0e2, type: 3}
   _spawnDelay: 1
   _minSpawnRange: -100
   _maxSpawnRange: 100
@@ -379,6 +333,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!114 &824765141 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2901033137649883893, guid: b1ac0e8409b572d43b8981b86da21c28, type: 3}
+  m_PrefabInstance: {fileID: 293250327211985981}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d50eecf6e7b49554d8295dae76709985, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -503,6 +468,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _movementSpeed: 50
   _verticalMovementSpeed: 40
+  _upKey: 101
+  _downKey: 113
 --- !u!1 &979278354
 GameObject:
   m_ObjectHideFlags: 0
@@ -617,7 +584,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ff9c59c4a4e2b64a9cc1452e436f094, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _scanner: {fileID: 195815676}
 --- !u!4 &1633550265
 Transform:
   m_ObjectHideFlags: 0
@@ -630,8 +596,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 195815677}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1789626952
@@ -710,7 +675,7 @@ GameObject:
   - component: {fileID: 1826192452}
   - component: {fileID: 1826192453}
   m_Layer: 0
-  m_Name: FlagSelector
+  m_Name: FlagStatus
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -791,10 +756,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1962121498121875132, guid: b1ac0e8409b572d43b8981b86da21c28, type: 3}
+      propertyPath: m_Name
+      value: FlagPlacer
+      objectReference: {fileID: 0}
+    - target: {fileID: 2901033137649883893, guid: b1ac0e8409b572d43b8981b86da21c28, type: 3}
+      propertyPath: _template
+      value: 
+      objectReference: {fileID: 6013377291494442090, guid: f9dbaed26a1346844a3a01956122f42d, type: 3}
+    - target: {fileID: 2901033137649883893, guid: b1ac0e8409b572d43b8981b86da21c28, type: 3}
+      propertyPath: _flagStatus
+      value: 
+      objectReference: {fileID: 1826192453}
     - target: {fileID: 2901033137649883893, guid: b1ac0e8409b572d43b8981b86da21c28, type: 3}
       propertyPath: _flagSelector
       value: 
       objectReference: {fileID: 1826192453}
+    - target: {fileID: 2901033137649883893, guid: b1ac0e8409b572d43b8981b86da21c28, type: 3}
+      propertyPath: _flagTemplate
+      value: 
+      objectReference: {fileID: 6013377291494442090, guid: f9dbaed26a1346844a3a01956122f42d, type: 3}
     - target: {fileID: 2901033137649883893, guid: b1ac0e8409b572d43b8981b86da21c28, type: 3}
       propertyPath: _groundPointerClick
       value: 
@@ -804,9 +785,13 @@ PrefabInstance:
       value: Base
       objectReference: {fileID: 0}
     - target: {fileID: 3637731002388886982, guid: b1ac0e8409b572d43b8981b86da21c28, type: 3}
+      propertyPath: _flagPlacement
+      value: 
+      objectReference: {fileID: 824765141}
+    - target: {fileID: 3637731002388886982, guid: b1ac0e8409b572d43b8981b86da21c28, type: 3}
       propertyPath: _resourceScanner
       value: 
-      objectReference: {fileID: 195815676}
+      objectReference: {fileID: 0}
     - target: {fileID: 3637731002388886982, guid: b1ac0e8409b572d43b8981b86da21c28, type: 3}
       propertyPath: _resourceStorage
       value: 

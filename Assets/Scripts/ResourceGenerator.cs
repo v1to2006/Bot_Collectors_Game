@@ -1,42 +1,48 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
 public class ResourceGenerator : MonoBehaviour
 {
-    [SerializeField] private Resource _resourcePrefab;
-    [SerializeField] private float _spawnDelay;
-    [SerializeField] private float _minSpawnRange;
-    [SerializeField] private float _maxSpawnRange;
+	public static event Action<Resource> ResourceSpawned;
 
-    private Coroutine _spawnResourcesCoroutine;
+	[SerializeField] private Resource resourceTemplate;
+	[SerializeField] private float _spawnDelay;
+	[SerializeField] private float _minSpawnRange;
+	[SerializeField] private float _maxSpawnRange;
 
-    private void Awake()
-    {
-        _spawnResourcesCoroutine = StartCoroutine(SpawnResources());
-    }
+	private Coroutine _spawnResourcesCoroutine;
 
-    private IEnumerator SpawnResources()
-    {
-        WaitForSeconds delay = new WaitForSeconds(_spawnDelay);
+	private void Start()
+	{
+		_spawnResourcesCoroutine = StartCoroutine(SpawnResources());
+	}
 
-        while (true)
-        {
-            Instantiate(_resourcePrefab,
-                GenerateRandomPosition(),
-                Quaternion.identity,
-                transform);
+	private IEnumerator SpawnResources()
+	{
+		WaitForSeconds delay = new WaitForSeconds(_spawnDelay);
 
-            yield return delay;
-        }
-    }
+		while (true)
+		{
+			Resource resource = Instantiate(resourceTemplate,
+				GenerateRandomPosition(),
+				Quaternion.identity,
+				transform);
 
-    private Vector3 GenerateRandomPosition()
-    {
-        return new Vector3(Random.Range(_minSpawnRange, _maxSpawnRange), 0f, Random.Range(_minSpawnRange, _maxSpawnRange));
-    }
+			ResourceSpawned?.Invoke(resource);
 
-    private void OnDestroy()
-    {
-        StopCoroutine(_spawnResourcesCoroutine);
-    }
+			yield return delay;
+		}
+	}
+
+	private Vector3 GenerateRandomPosition()
+	{
+		return new Vector3(UnityEngine.Random.Range(_minSpawnRange, _maxSpawnRange), 0f, UnityEngine.Random.Range(_minSpawnRange, _maxSpawnRange));
+	}
+
+	private void OnDestroy()
+	{
+		if (_spawnResourcesCoroutine != null)
+			StopCoroutine(_spawnResourcesCoroutine);
+	}
 }

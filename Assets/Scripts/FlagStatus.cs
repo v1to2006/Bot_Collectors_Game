@@ -9,7 +9,7 @@ public class FlagStatus : MonoBehaviour
         FlagSelected = true;
     }
 
-    public void UnSelectFlag()
+    public void DeleteFlag()
     {
         FlagSelected = false;
     }

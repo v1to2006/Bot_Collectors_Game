@@ -3,27 +3,27 @@ using UnityEngine;
 
 public class ResourceStorage : MonoBehaviour
 {
-    [SerializeField] private ResourceScanner _scanner;
+	private Queue<Resource> _scannedResources;
 
-    private Queue<Resource> _scannedResources;
+	private void Awake()
+	{
+		ResourceGenerator.ResourceSpawned += AddResource;
 
-    private void Awake()
-    {
-        _scannedResources = new Queue<Resource>();
-    }
+		_scannedResources = new Queue<Resource>();
+	}
 
-    public Resource GetResource()
-    {
-        return _scannedResources.Peek();
-    }
+	public Resource GetResource()
+	{
+		return _scannedResources.Dequeue();
+	}
 
-    public int GetResourcesCount()
-    {
-        return _scannedResources.Count;
-    }
+	public int GetResourcesCount()
+	{
+		return _scannedResources.Count;
+	}
 
-    public void AddResource(Resource resource)
-    {
-        _scannedResources.Enqueue(resource);
-    }
+	private void AddResource(Resource resource)
+	{
+		_scannedResources.Enqueue(resource);
+	}
 }
