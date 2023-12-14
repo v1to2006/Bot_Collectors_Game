@@ -3,20 +3,30 @@ using UnityEngine;
 
 public class ResourceScanner : MonoBehaviour
 {
-	private readonly Queue<Resource> _scannedResources = new Queue<Resource>();
+    [SerializeField] private float _radius;
 
-	public Resource GetResource()
-	{
-		return _scannedResources.Dequeue();
-	}
+    public Queue<Resource> ScanResources()
+    {
+        Queue<Resource> scannedResources = new Queue<Resource>();
 
-	public int GetResourcesCount()
-	{
-		return _scannedResources.Count;
-	}
+        Collider[] hits = Physics.OverlapSphere(transform.position, _radius);
 
-	public void AddResource(Resource resource)
-	{
-		_scannedResources.Enqueue(resource);
-	}
+        foreach (Collider hit in hits)
+        {
+            if (hit.TryGetComponent<Resource>(out Resource resource))
+            {
+                if (!scannedResources.Contains(resource))
+                {
+                    scannedResources.Enqueue(resource);
+                }
+            }
+        }
+
+        return scannedResources;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawSphere(transform.position, _radius);
+    }
 }

@@ -1,63 +1,70 @@
 using UnityEngine;
 
-[RequireComponent(typeof(UnitController))]
+[RequireComponent(typeof(UnitAction))]
 public class Unit : MonoBehaviour
 {
-	private Base _mainBase;
-	private Resource _targetResource;
-	private Flag _targetFlag;
-	private UnitController _unitController;
+    private Base _mainBase;
+    private Resource _targetResource;
+    private Flag _targetFlag;
+    private UnitAction _unitController;
 
-	private void Awake()
-	{
-		_unitController = GetComponent<UnitController>();
-	}
+    private Coroutine _goToFlagCoroutine;
+    private Coroutine _goForResourcesCoroutine;
+    private Coroutine _returnToBaseCoroutine;
 
-	public void StartDelivery(Base mainBase, Resource resource)
-	{
-		_mainBase = mainBase;
-		_targetResource = resource;
+    private void Awake()
+    {
+        _unitController = GetComponent<UnitAction>();
+    }
 
-		GoForResource();
-	}
+    public void StartDelivery(Base mainBase, Resource resource)
+    {
+        _mainBase = mainBase;
+        _targetResource = resource;
 
-	public void StartBaseBuilding(Base mainBase, Flag flag)
-	{
-		_mainBase = mainBase;
-		_targetFlag = flag;
+        GoForResource();
+    }
 
-		GoToFlag();
-	}
+    public void StartBaseBuilding(Base mainBase, Flag flag)
+    {
+        _mainBase = mainBase;
+        _targetFlag = flag;
 
-	private void GoToFlag()
-	{
-		StartCoroutine(_unitController.MoveToTarget(_targetFlag.transform, () =>
-		{
-			BuildBase();
-		}));
-	}
+        GoToFlag();
+    }
 
-	private void BuildBase()
-	{
-		Base buildedBase = Instantiate(_mainBase, _targetFlag.transform.position, Quaternion.identity);
-		Destroy(_targetFlag.gameObject);
-		buildedBase.AddUnit(this);
-	}
+    private void GoToFlag()
+    {
+        _goToFlagCoroutine = StartCoroutine(_unitController.MoveToTarget(_targetFlag.transform, () =>
+        {
+            BuildBase();
+            StopCoroutine(_goToFlagCoroutine);
+        }));
+    }
 
-	private void GoForResource()
-	{
-		StartCoroutine(_unitController.MoveToTarget(_targetResource.transform, () =>
-		{
-			_unitController.PickUp(_targetResource);
-			ReturnToBase();
-		}));
-	}
+    private void BuildBase()
+    {
+        Base buildedBase = Instantiate(_mainBase, _targetFlag.transform.position, Quaternion.identity);
+        Destroy(_targetFlag.gameObject);
+        buildedBase.AddUnit(this);
+    }
 
-	private void ReturnToBase()
-	{
-		StartCoroutine(_unitController.MoveToTarget(_mainBase.transform, () =>
-		{
-			_mainBase.CollectResource(this, _targetResource);
-		}));
-	}
+    private void GoForResource()
+    {
+        _goForResourcesCoroutine = StartCoroutine(_unitController.MoveToTarget(_targetResource.transform, () =>
+        {
+            _unitController.PickUp(_targetResource);
+            ReturnToBase();
+            StopCoroutine(_goForResourcesCoroutine);
+        }));
+    }
+
+    private void ReturnToBase()
+    {
+        _returnToBaseCoroutine = StartCoroutine(_unitController.MoveToTarget(_mainBase.transform, () =>
+        {
+            _mainBase.CollectResource(this, _targetResource);
+            StopCoroutine(_returnToBaseCoroutine);
+        }));
+    }
 }

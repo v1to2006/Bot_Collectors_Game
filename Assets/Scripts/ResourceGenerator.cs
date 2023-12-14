@@ -3,34 +3,40 @@ using UnityEngine;
 
 public class ResourceGenerator : MonoBehaviour
 {
-	[SerializeField] private Resource _resourcePrefab;
-	[SerializeField] private ResourceScanner _resourceScanner;
-	[SerializeField] private float _spawnDelay;
-	[SerializeField] private float _minSpawnRange;
-	[SerializeField] private float _maxSpawnRange;
+    [SerializeField] private Resource _resourcePrefab;
+    [SerializeField] private float _spawnDelay;
+    [SerializeField] private float _minSpawnRange;
+    [SerializeField] private float _maxSpawnRange;
 
-	private void Awake()
-	{
-		StartCoroutine(SpawnResources());
-	}
+    private Coroutine _spawnResourcesCoroutine;
 
-	private IEnumerator SpawnResources()
-	{
-		WaitForSeconds delay = new WaitForSeconds(_spawnDelay);
+    private void Awake()
+    {
+        _spawnResourcesCoroutine = StartCoroutine(SpawnResources());
+    }
 
-		while (true)
-		{
-			_resourceScanner.AddResource(Instantiate(_resourcePrefab,
-				GenerateRandomPosition(),
-				Quaternion.identity,
-				transform));
+    private IEnumerator SpawnResources()
+    {
+        WaitForSeconds delay = new WaitForSeconds(_spawnDelay);
 
-			yield return delay;
-		}
-	}
+        while (true)
+        {
+            Instantiate(_resourcePrefab,
+                GenerateRandomPosition(),
+                Quaternion.identity,
+                transform);
 
-	private Vector3 GenerateRandomPosition()
-	{
-		return new Vector3(Random.Range(_minSpawnRange, _maxSpawnRange), 0f, Random.Range(_minSpawnRange, _maxSpawnRange));
-	}
+            yield return delay;
+        }
+    }
+
+    private Vector3 GenerateRandomPosition()
+    {
+        return new Vector3(Random.Range(_minSpawnRange, _maxSpawnRange), 0f, Random.Range(_minSpawnRange, _maxSpawnRange));
+    }
+
+    private void OnDestroy()
+    {
+        StopCoroutine(_spawnResourcesCoroutine);
+    }
 }
