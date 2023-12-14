@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class Base : MonoBehaviour
 {
-	[SerializeField] private ResourceScanner _resourceScanner;
+	[SerializeField] private ResourceStorage _resourceStorage;
 	[SerializeField] private UnitSpawner _unitSpawner;
-	[SerializeField] private FlagManager _flagManager;
+	[SerializeField] private FlagPlacement _flagPlacement;
 
 	private Queue<Unit> _activeUnits;
 
@@ -14,6 +14,8 @@ public class Base : MonoBehaviour
 	private int _resourcesCount = 0;
 	private int _unitPrice = 3;
 	private int _baseBuildPrice = 5;
+
+	private Coroutine _unitsSendCoroutine;
 
 	private void Awake()
 	{
@@ -27,7 +29,7 @@ public class Base : MonoBehaviour
 			_activeUnits.Enqueue(_unitSpawner.CreateUnit());
 		}
 
-		StartCoroutine(SendUnitsForResources());
+		_unitsSendCoroutine = StartCoroutine(SendUnitsForResources());
 	}
 
 	public void CollectResource(Unit unit, Resource deliveredResource)
@@ -35,6 +37,7 @@ public class Base : MonoBehaviour
 		Destroy(deliveredResource.gameObject);
 		_resourcesCount++;
 		_activeUnits.Enqueue(unit);
+
 		MakeNewStep();
 	}
 
@@ -45,7 +48,7 @@ public class Base : MonoBehaviour
 
 	private void MakeNewStep()
 	{
-		if (_flagManager.Flag == null && _resourcesCount >= _unitPrice)
+		if (_flagPlacement.Flag == null && _resourcesCount >= _unitPrice)
 		{
 			BuyNewUnit();
 		}
@@ -72,16 +75,21 @@ public class Base : MonoBehaviour
 
 	private void SendUnitToCollectResource()
 	{
-		if (_activeUnits.Count > 0 && _resourceScanner.GetResourcesCount() > 0)
+		if (_activeUnits.Count > 0 && _resourceStorage.GetResourcesCount() > 0)
 		{
-			_activeUnits.Dequeue().StartDelivery(this, _resourceScanner.GetResource());
+			_activeUnits.Dequeue().StartDelivery(this, _resourceStorage.GetResource());
 		}
 	}
 
 	private void SendUnitToFlag()
 	{
-		_activeUnits.Dequeue().StartBaseBuilding(this, _flagManager.Flag);
+		_activeUnits.Dequeue().StartBaseBuilding(this, _flagPlacement.Flag);
 		_resourcesCount -= _baseBuildPrice;
-		_flagManager.ResetFlag();
+		_flagPlacement.ResetFlag();
+	}
+
+	private void OnDestroy()
+	{
+		StopCoroutine(_unitsSendCoroutine);
 	}
 }

@@ -2,11 +2,10 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class UnitController : MonoBehaviour
+public class UnitAction : MonoBehaviour
 {
 	[SerializeField] private float _movementSpeed;
-
-	private float _reachDistance = 1f;
+	[SerializeField] private float _reachDistance;
 
 	public IEnumerator MoveToTarget(Transform target, Action complete)
 	{
@@ -29,13 +28,10 @@ public class UnitController : MonoBehaviour
 	{
 		Vector3 pickedResourcePosition = new Vector3(0, 0, 1);
 
-		BoxCollider resourceBoxCollider = resource.GetComponent<BoxCollider>();
-		Rigidbody resourceRigidbody = resource.GetComponent<Rigidbody>();
-
-		if (resourceBoxCollider != null && resourceRigidbody != null)
+		if (resource.BoxCollider() != null && resource.Rigidbody() != null)
 		{
-			resourceBoxCollider.enabled = false;
-			resourceRigidbody.isKinematic = true;
+			resource.BoxCollider().enabled = false;
+			resource.Rigidbody().isKinematic = true;
 			resource.transform.localPosition = pickedResourcePosition;
 			resource.transform.SetParent(transform, false);
 		}

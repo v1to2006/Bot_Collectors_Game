@@ -1,18 +1,23 @@
 using UnityEngine;
 
 [RequireComponent(typeof(MouseFollow))]
-public class FlagManager : MonoBehaviour
+public class FlagPlacement : MonoBehaviour
 {
-	public Flag Flag { get; private set; }
+	private Flag _flag;
 
-	[SerializeField] private Flag _flagPrefab;
-	[SerializeField] private FlagSelector _flagSelector;
+	[SerializeField] private Flag _flagTemplate;
+	[SerializeField] private FlagStatus _flagStatus;
 	[SerializeField] private GroundPointerClick _groundPointerClick;
 	[SerializeField] private BasePointerClick _basePointerClick;
 
 	private Flag _selectedFlag;
 	private MouseFollow _mouseFollow;
 	private Coroutine _mouseFollowCoroutine;
+
+	public Flag Flag
+	{
+		get { return _flag; }
+	}
 
 	private void Awake()
 	{
@@ -24,16 +29,16 @@ public class FlagManager : MonoBehaviour
 
 	public void ResetFlag()
 	{
-		Flag = null;
+		_flag = null;
 	}
 
 	private void TrySelectFlag()
 	{
-		if (_selectedFlag != null && _flagSelector.FlagSelected)
+		if (_selectedFlag != null && _flagStatus.FlagSelected)
 		{
 			DeleteFlag();
 		}
-		else if (_flagSelector.FlagSelected == false)
+		else if (_flagStatus.FlagSelected == false)
 		{
 			SelectFlag();
 		}
@@ -41,16 +46,16 @@ public class FlagManager : MonoBehaviour
 
 	private void TryPlaceFlag()
 	{
-		if (_selectedFlag != null && _flagSelector.FlagSelected)
+		if (_selectedFlag != null && _flagStatus.FlagSelected)
 		{
 			StopCoroutine(_mouseFollowCoroutine);
-			if (Flag != null)
-				Destroy(Flag.gameObject);
+			if (_flag != null)
+				Destroy(_flag.gameObject);
 
-			Flag = Instantiate(_flagPrefab, _groundPointerClick.ClickPosition, Quaternion.identity);
+			_flag = Instantiate(_flagTemplate, _groundPointerClick.ClickPosition, Quaternion.identity);
 			Destroy(_selectedFlag.gameObject);
 
-			_flagSelector.SetFlagStatus(false);
+			_flagStatus.DeleteFlag();
 		}
 	}
 
@@ -58,13 +63,13 @@ public class FlagManager : MonoBehaviour
 	{
 		StopCoroutine(_mouseFollowCoroutine);
 		Destroy(_selectedFlag.gameObject);
-		_flagSelector.SetFlagStatus(false);
+		_flagStatus.DeleteFlag();
 	}
 
 	private void SelectFlag()
 	{
-		_selectedFlag = Instantiate(_flagPrefab);
+		_selectedFlag = Instantiate(_flagTemplate);
 		_mouseFollowCoroutine = StartCoroutine(_mouseFollow.FollowMouse(_selectedFlag.transform));
-		_flagSelector.SetFlagStatus(true);
+		_flagStatus.SelectFlag();
 	}
 }

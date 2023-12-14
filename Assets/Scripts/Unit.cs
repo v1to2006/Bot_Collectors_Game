@@ -1,16 +1,20 @@
 using UnityEngine;
 
-[RequireComponent(typeof(UnitController))]
+[RequireComponent(typeof(UnitAction))]
 public class Unit : MonoBehaviour
 {
 	private Base _mainBase;
 	private Resource _targetResource;
 	private Flag _targetFlag;
-	private UnitController _unitController;
+	private UnitAction _unitAction;
+
+	private Coroutine _goToFlagCoroutine;
+	private Coroutine _goForResourcesCoroutine;
+	private Coroutine _returnToBaseCoroutine;
 
 	private void Awake()
 	{
-		_unitController = GetComponent<UnitController>();
+		_unitAction = GetComponent<UnitAction>();
 	}
 
 	public void StartDelivery(Base mainBase, Resource resource)
@@ -31,9 +35,10 @@ public class Unit : MonoBehaviour
 
 	private void GoToFlag()
 	{
-		StartCoroutine(_unitController.MoveToTarget(_targetFlag.transform, () =>
+		_goToFlagCoroutine = StartCoroutine(_unitAction.MoveToTarget(_targetFlag.transform, () =>
 		{
 			BuildBase();
+			StopCoroutine(_goToFlagCoroutine);
 		}));
 	}
 
@@ -46,18 +51,20 @@ public class Unit : MonoBehaviour
 
 	private void GoForResource()
 	{
-		StartCoroutine(_unitController.MoveToTarget(_targetResource.transform, () =>
+		_goForResourcesCoroutine = StartCoroutine(_unitAction.MoveToTarget(_targetResource.transform, () =>
 		{
-			_unitController.PickUp(_targetResource);
+			_unitAction.PickUp(_targetResource);
 			ReturnToBase();
+			StopCoroutine(_goForResourcesCoroutine);
 		}));
 	}
 
 	private void ReturnToBase()
 	{
-		StartCoroutine(_unitController.MoveToTarget(_mainBase.transform, () =>
+		_returnToBaseCoroutine = StartCoroutine(_unitAction.MoveToTarget(_mainBase.transform, () =>
 		{
 			_mainBase.CollectResource(this, _targetResource);
+			StopCoroutine(_returnToBaseCoroutine);
 		}));
 	}
 }
